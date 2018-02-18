@@ -1,100 +1,219 @@
 var stocksBetContract;
+var abi;
 var account;
 var instance;
+var curContractMeta = null;
+var curMoment;
+var weiEth = 1000000000000000000;
 
 window.addEventListener('load', function () {
-    // Checking if Web3 has been injected by the browser (Mist/MetaMask)
-    if (typeof web3 !== 'undefined') {
-      console.warn("Using web3 detected from external source. If you find that your accounts don't appear or you have 0 TestTicker, ensure you've configured that source properly. If using MetaMask, see the following link. Feel free to delete this warning. :) http://truffleframework.com/tutorials/truffle-and-metamask")
-      // Use Mist/MetaMask's provider
-      window.web3 = new Web3(web3.currentProvider)
-      // window.web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'))
-    } else {
-      console.warn("No web3 detected. Falling back to http://127.0.0.1:8545. You should remove this fallback when you deploy live, as it's inherently insecure. Consider switching to Metamask for development. More info here: http://truffleframework.com/tutorials/truffle-and-metamask")
-      // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-      // window.web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'))
-    }
-    App.start()
+    $.get("./abi.txt", function(abiTxt) {
+      abi = JSON.parse(abiTxt);
+      // Checking if Web3 has been injected by the browser (Mist/MetaMask)
+      if (typeof web3 !== 'undefined') {
+        console.warn("Using web3 detected from external source. If you find that your accounts don't appear or you have 0 TestTicker, ensure you've configured that source properly. If using MetaMask, see the following link. Feel free to delete this warning. :) http://truffleframework.com/tutorials/truffle-and-metamask")
+        // Use Mist/MetaMask's provider
+        window.web3 = new Web3(web3.currentProvider)
+        // window.web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'))
+      } else {
+        console.warn("No web3 detected. Falling back to http://127.0.0.1:8545. You should remove this fallback when you deploy live, as it's inherently insecure. Consider switching to Metamask for development. More info here: http://truffleframework.com/tutorials/truffle-and-metamask")
+        // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+        // window.web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'))
+      }
+      App.start()
+    });
   })
 
 window.App = {
     start: function () {
 
-        abi = JSON.parse('[{"constant": true,"inputs": [  {"name": "","type": "bytes32"  }],"name": "stocksIndex","outputs": [  {"name": "totalPool","type": "uint256"  },  {"name": "priceStart","type": "uint256"  },  {"name": "priceEnd","type": "uint256"  },  {"name": "betsCount","type": "uint256"  },  {"name": "canceledBetsCount","type": "uint256"  },  {"name": "isWinner","type": "bool"  }],"payable": false,"stateMutability": "view","type": "function"  },  {"constant": false,"inputs": [  {"name": "myid","type": "bytes32"  },  {"name": "result","type": "string"  }],"name": "__callback","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"  },  {"constant": true,"inputs": [  {"name": "","type": "address"  }],"name": "bettorsIndex","outputs": [  {"name": "betsCount","type": "uint256"  },  {"name": "canceledBetsCount","type": "uint256"  },  {"name": "isRewarded","type": "bool"  }],"payable": false,"stateMutability": "view","type": "function"  },  {"constant": true,"inputs": [],"name": "rewardCheck","outputs": [  {"name": "","type": "uint256"  }],"payable": false,"stateMutability": "view","type": "function"  },  {"constant": true,"inputs": [],"name": "actionStatus","outputs": [  {"name": "isOpen","type": "bool"  },  {"name": "isStart","type": "bool"  },  {"name": "isEnd","type": "bool"  },  {"name": "isVoided","type": "bool"  },  {"name": "duration","type": "uint256"  },  {"name": "durationLockBetReceiving","type": "uint256"  },  {"name": "durationBettingResult","type": "uint256"  },  {"name": "momentStart","type": "uint256"  },  {"name": "momentCloseValue","type": "string"  },  {"name": "momentOpen1MValue","type": "string"  }],"payable": false,"stateMutability": "view","type": "function"  },  {"constant": false,"inputs": [  {"name": "myid","type": "bytes32"  },  {"name": "result","type": "string"  },  {"name": "proof","type": "bytes"  }],"name": "__callback","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"  },  {"constant": true,"inputs": [],"name": "queryProp","outputs": [  {"name": "","type": "uint256"  }],"payable": false,"stateMutability": "view","type": "function"  },  {"constant": true,"inputs": [],"name": "version","outputs": [  {"name": "","type": "string"  }],"payable": false,"stateMutability": "view","type": "function"  },  {"constant": true,"inputs": [],"name": "getBettorInfo","outputs": [  {"name": "","type": "uint256"  },  {"name": "","type": "bytes32[]"  },  {"name": "","type": "uint256[]"  },  {"name": "","type": "bool[]"  }],"payable": false,"stateMutability": "view","type": "function"  },  {"constant": false,"inputs": [],"name": "refundKill","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"  },  {"constant": true,"inputs": [  {"name": "index","type": "bytes32"  }],"name": "getStockInfo","outputs": [  {"name": "","type": "uint256"  },  {"name": "","type": "uint256"  },  {"name": "","type": "uint256"  },  {"name": "","type": "uint256"  },  {"name": "","type": "uint256"  }],"payable": false,"stateMutability": "view","type": "function"  },  {"constant": false,"inputs": [],"name": "rewardClaim","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"  },  {"constant": true,"inputs": [],"name": "totalReward","outputs": [  {"name": "","type": "uint256"  }],"payable": false,"stateMutability": "view","type": "function"  },  {"constant": true,"inputs": [  {"name": "s","type": "string"  }],"name": "stringToUintNormalize","outputs": [  {"name": "result","type": "uint256"  }],"payable": false,"stateMutability": "view","type": "function"  },  {"constant": true,"inputs": [],"name": "owner","outputs": [  {"name": "","type": "address"  }],"payable": false,"stateMutability": "view","type": "function"  },  {"constant": false,"inputs": [  {"name": "stock","type": "bytes32"  }],"name": "sendBet","outputs": [],"payable": true,"stateMutability": "payable","type": "function"  },  {"constant": true,"inputs": [],"name": "stocks","outputs": [  {"name": "oddsAAPL","type": "int256"  },  {"name": "oddsMSFT","type": "int256"  },  {"name": "oddsGOOG","type": "int256"  },  {"name": "AAPL","type": "bytes32"  },  {"name": "MSFT","type": "bytes32"  },  {"name": "GOOG","type": "bytes32"  }],"payable": false,"stateMutability": "view","type": "function"  },  {"constant": false,"inputs": [],"name": "recovery","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"  },  {"constant": false,"inputs": [  {"name": "momentCloseValue","type": "string"  },  {"name": "momentOpen1MValue","type": "string"  },  {"name": "durationLockBetReceiving","type": "uint256"  },  {"name": "durationBettingResult","type": "uint256"  }],"name": "setupBetting","outputs": [  {"name": "","type": "bool"  }],"payable": true,"stateMutability": "payable","type": "function"  },  {"constant": true,"inputs": [],"name": "totalPool","outputs": [  {"name": "","type": "uint256"  }],"payable": false,"stateMutability": "view","type": "function"  },  {"constant": false,"inputs": [  {"name": "stock","type": "bytes32"  }],"name": "cancelAllBet","outputs": [],"payable": true,"stateMutability": "payable","type": "function"  },  {"constant": true,"inputs": [],"name": "getRewardTotal","outputs": [  {"name": "","type": "uint256"  }],"payable": false,"stateMutability": "view","type": "function"  },  {"inputs": [],"payable": true,"stateMutability": "payable","type": "constructor"  },  {"anonymous": false,"inputs": [  {"indexed": false,"name": "description","type": "string"  }],"name": "newOraclizeQuery","type": "event"  },  {"anonymous": false,"inputs": [  {"indexed": false,"name": "price","type": "uint256"  }],"name": "newPriceTicker","type": "event"  },  {"anonymous": false,"inputs": [  {"indexed": false,"name": "from","type": "address"  },  {"indexed": false,"name": "val","type": "uint256"  }],"name": "Deposit","type": "event"  },  {"anonymous": false,"inputs": [  {"indexed": false,"name": "to","type": "address"  },  {"indexed": false,"name": "val","type": "uint256"  }],"name": "Withdraw","type": "event"  }]');
-        
+      if (localStorage.getItem("StocksBetContractMeta") != null) {
+        curContractMeta = JSON.parse(localStorage.getItem("StocksBetContractMeta"));
+      }
+      var curContractMetaIsExist = false;
+
+      //console.log(JSON.parse(localStorage.getItem("StocksBetContractMeta")));
+      
+      $.get("http://api.stocks.bet/v1/moment", function(resultMoment) {
+        curMoment = resultMoment;
+        $.get("http://api.stocks.bet/v1/contracts", function(contracts) {
+
+          $.each(contracts, function(key, value) {
+            if (curContractMeta != null) {
+              if (curContractMeta.address == key) {
+                curContractMetaIsExist = true;
+              }
+            }
+            $('#selectBetting').prepend($("<option></option>")
+              .attr("value",key)
+              .text(value.split(' ')[0])); 
+          });
+  
+        }).then(function(){
+          if (!curContractMetaIsExist) {
+            $('#selectBetting :first').attr("selected", "selected");
+            curContractMeta = {
+              address: $("#selectBetting :selected").val(),
+              date: $("#selectBetting :selected").text()
+            };
+            localStorage.setItem('StocksBetContractMeta', JSON.stringify(curContractMeta));
+          }
+          else {
+            //console.log("!!!");
+            $("#selectBetting").val(curContractMeta.address).change();
+          }
+  
+  
+           console.info("curContractMeta:", curContractMeta);
+          //console.info("curContractMetaIsExist:", curContractMetaIsExist);
+          //localStorage.setItem('myCat', 'Tom');
+          
+          App.contractLoad(curContractMeta.address);
+        });
+
+      });
+
+    },
+
+    contractLoad: function (address) {
+        //////////////////////////////////////////////////////////////////////////////
+
+        $('#currentBettingName').html(curContractMeta.date + " Betting");
+
         stocksBetContract = web3.eth.contract(abi);
         account = web3.eth.accounts[0];
 
-        console.info('account:', account)
-        instance = stocksBetContract.at('0xb228cc24ecf9dd7068a7743180f0defcdc385f13')
-        console.info('instance:', instance)
+        //console.info('account:', account)
+        instance = stocksBetContract.at(address);
+        //console.info('instance:', instance)
     
         //console.info('owner', instance.owner())
         console.info('instance.address', instance.address)
-        $('#contractAddress').html('<a href="https://ropsten.etherscan.io/address/' + instance.address + '">Smart Contract Address</a>');
+        $('#contractAddress').html('<a href="https://ropsten.etherscan.io/address/' + instance.address + '" target="_blank">Smart Contract Address</a>');
 
         
         //new Date(timestamp)
 
+        /*
         instance.owner((err, result) => {
             console.info("owner:", result);
           });
+        */
 
         instance.actionStatus((err, result) => {
-            if (result[0]) {
-                $('#statusCurrentBetting').html("(Open)");
-            }
-            if (result[1]) {
-                $('#statusCurrentBetting').html("(Start)");
-                $('#rewardUserResultButtonCancel').hide();
-            }
-            if (result[2]) {
-                $('#statusCurrentBetting').html("(End)");
-                $('#rewardUserResultButtonCancel').hide();
-                $('.buttonPlaceBet').hide();
-                // $('#rewardUserInfo').append("The betting is completed");
-                $('.divReward').show();
-            }
-            if (result[3]) {
-                $('#statusCurrentBetting').html("(Voided)");
+
+          $('#rewardUserTransactionResult').hide();
+          $('#bettingWarning').hide();
+          $('.buttonPlaceBet').hide();
+          $('.divReward').hide();
+          $('#bettingInfo').hide();
+          $('#rewardUserResult').hide();
+          $('#durationCurrentBetting').html('');
+          //$('#rewardUserResultButtonCancel').hide();
+
+          if (result[3]) { // Voided
+            $('#statusCurrentBetting').html("(Voided)");
+
+          } else if (result[2]) { // End
+            $('#statusCurrentBetting').html("(End)");
+            $('.divReward').show();
+            $('#rewardUserResult').show();
+            $('#durationCurrentBetting').html('The Stocks rally is finished. Check your reward in this betting.');
+            // $('#rewardUserInfo').append("The betting is completed");
+
+            App.rewardCheck();
+
+          } else if (result[1]) { // Start
+
+            let durationText = '';
+            var diff = Math.abs(new Date(curMoment) - new Date(result[10]));
+            let duration = parseInt(result[4].toString()) / 60 - parseInt(diff / 1000 / 60);
+            durationText = duration + ' minutes';
+
+            $('#statusCurrentBetting').html("(Start)");
+            
+            $('#durationCurrentBetting').html("The Stocks rally is starting. You can see the result in " + durationText);
+            if (duration <= 0) {
+              $('#durationCurrentBetting').html("Change status of Betting in BlockChain.");
+              console.info("Delay duration, min:", duration)
             }
             
-            //console.info("actionStatus.isOpen:", result[0]);
-            //console.info("actionStatus.isStart:", result[1]);
-            //console.info("actionStatus.isEnd:", result[2]);
-            //console.info("actionStatus.isVoided:", result[3]);
+            $('#bettingInfo').html(' <b>Accepting bets is finished.</b> The Contract fix the price of stocks on ' + result[9].replace("00:00", "00 NY."));
+            $('#bettingInfo').show();
 
-            $('#durationCurrentBetting').html(result[4].toString() + " sec");
+          } else if (result[0]) { // Open
+
+            let durationText = '';
+            var diff = Math.abs(new Date(curMoment) - new Date(result[10]));
+            //let duration = parseInt(result[4].toString()) / 60 - parseInt(diff / 1000 / 60);
+            let duration = parseInt(result[5].toString()) - parseInt(diff / 1000 / 60);
+            if (duration < 60) {
+              durationText = duration + ' minutes';
+            } else {
+              durationText = parseInt((duration / 60)) + ' hours';
+            }
+            $('#statusCurrentBetting').html("(Open)");
+            $('.buttonPlaceBet').show();
+
+            $('#durationCurrentBetting').html("Bets will be close " + durationText + " before the stocks rally start.");
+
+            if (duration <= 0) {
+              $('#durationCurrentBetting').html("Change status of Betting in BlockChain.");
+              console.info("Delay duration, min:", duration)
+            }
+
+          }
+            
+            
+            
+            
+            /*
+            console.info("actionStatus.isOpen:", result[0]);
+            console.info("actionStatus.isStart:", result[1]);
+            console.info("actionStatus.isEnd:", result[2]);
+            console.info("actionStatus.isVoided:", result[3]);
+            */
+
             
             //web3.utils.fromWei(reward,"ether")
-            //console.info("actionStatus.duration:", result[4].toString());
-            //console.info("actionStatus.durationLockBetReceiving:", result[5].toString());
-            //console.info("actionStatus.durationBettingResult:", result[6].toString());
-            //console.info("actionStatus.momentStart:", parseInt(result[7].toString()));
-            //console.info("actionStatus.momentCloseValue:", result[8]);
-            //console.info("actionStatus.momentOpen1MValue:", result[9]);
+            
+            /*
+            console.info("actionStatus.duration:", result[4].toString());
+            console.info("actionStatus.durationLockBetReceiving:", result[5].toString());
+            console.info("actionStatus.durationBettingResult:", result[6].toString());
+            console.info("actionStatus.momentStart:", parseInt(result[7].toString()));
+            console.info("actionStatus.momentCloseValue:", result[8]);
+            console.info("actionStatus.momentOpen1MValue:", result[9]);
             console.info("actionStatus.momentSetup:", result[10]);
-            $('.momentCloseValue').html(result[8] + " 16:00");
-            $('.momentOpen1MValue').html(result[9].replace("00:00", "00"));
+            */
+
+            $('.momentCloseValue').html(result[8] + " 16:00 NY");
+            $('.momentOpen1MValue').html(result[9].replace("00:00", "00 NY"));
         });
 
-          
-        //instance.getRewardTotal((errTP, resultTP) => {
-        instance.totalPool((errTP, resultTP) => {
+        /*
+        instance.queryProp((err, result) => {
+          console.info("err:", err);
+           console.info("result:", result.toString() / weiEth);
+        });
+        */
+        
 
-          //parseFloat
+        instance.getTotalPool((errTP, resultTP) => {
+        //instance.totalPool((errTP, resultTP) => {
           let totalPool = parseInt(resultTP.toString());
            //console.info("totalPoolTP:", totalPool);
+           //console.info("totalPool:", resultTP.toString());
 
           var stocksList = "MSFT,AAPL,GOOG".split(",");
           for (var i = 0, l = stocksList.length; i < l; i++) {
               let code = stocksList[i];
-              instance.getStockInfo(code, (err, result) => {
+              instance.stocksIndex(code, (err, result) => {
                   //console.info(code + ".totalPool", result[0].toString());
                   //console.info(code + ".priceStart", result[1].toString());
                   //console.info(code + ".priceEnd", result[2].toString());
                   //console.info(code + ".betsCount", parseInt(result[3].toString()));
-                  //console.info(code + ".isWinner", result[5]);
+                  console.info(code + ".isWinner", result[5]);
                   //console.info(code + ".canceledBetsCount", parseInt(result[4].toString()));
                   if (result[5] == true) {
                     $('#' + code + 'isWinner').html('<i class="fa fa-trophy icon-3x text-primary"></i>');
@@ -107,9 +226,9 @@ window.App = {
                   }
   
                   $('#' + code + 'Odds').html(odds);
-                  $('.' + code + 'totalPool').html(parseInt(result[0].toString()));
-                  $('#' + code + 'priceStart').html("$" + result[1].toString());
-                  $('#' + code + 'priceEnd').html("$" + result[2].toString());
+                  $('.' + code + 'totalPool').html(parseInt(result[0].toString()) / weiEth);
+                  $('#' + code + 'priceStart').html("$" + (result[1].toString() / 100));
+                  $('#' + code + 'priceEnd').html("$" + (result[2].toString() / 100));
                   $('#' + code + 'betsCount').html(parseInt(result[3].toString()) - parseInt(result[4].toString()));
 
                   $('#containerBetting').show();
@@ -120,11 +239,11 @@ window.App = {
 
         });
 
-/*
+        /*
         instance.totalReward((err, result) => {
             console.info("totalReward:", parseInt(result.toString()));
         });
-*/
+        */
 
 
         /*
@@ -134,26 +253,43 @@ window.App = {
         });
         */
         
-        instance.rewardCheck((err, result) => {
-          $('#rewardUserResult').append("Your reward in this betting: " + result.toString() + " ETH");
-          if (result.toString() != "0") {
-            $('#rewardUserResultButtonClaim').show();
-          }
-        });
-
-
         instance.getBettorInfo((err, result) => {
-            // console.info("bettorInfo.betsCount:", result[0].toString());
-            $('#rewardUserInfo').append("Your bets count: " + result[0].toString());
-            for (var i = 0; i < result[1].length; i++) {
-              $('#rewardUserInfo').append("<br>" + result[1][i] + " " + result[2][i] + "ETH ");
-              if (!result[3][i]) {
-                $('#rewardUserInfo').append("Cancelled");
-              }
-              //console.info("bettorInfo.bettorStocks:", result[1][i]);
-              //console.info("bettorInfo.bettorAmounts:", result[2][i]);
-              //console.info("bettorInfo.isCancelled:", result[3][i]);
+          //console.info("result", result);
+          // console.info("bettorInfo.betsCount:", result[0].toString());
+          $('#rewardUserInfo').html("<b>Your bets count: " + result[0].toString() + "</b>");
+          /*
+          if (result[0].toString() != "0") {
+            $('#rewardUserResultButtonCancel').show();
+          } else {
+            $('#rewardUserResultButtonCancel').hide();
+          }
+          */
+
+
+          for (var i = 0; i < result[1].length; i++) {
+
+            let bettorStockName;
+            if (result[1][i] == "0x4d53465400000000000000000000000000000000000000000000000000000000") {
+              bettorStockName = "MSFT";
+            } else if (result[1][i] == "0x474f4f4700000000000000000000000000000000000000000000000000000000") {
+              bettorStockName = "GOOG";
+            } else if (result[1][i] == "0x4141504c00000000000000000000000000000000000000000000000000000000") {
+              bettorStockName = "AAPL";
             }
+
+            let bettorAmounts = result[2][i] / weiEth;
+
+            if (i == 0) $('#rewardUserInfo').append("<br>"); 
+            else  $('#rewardUserInfo').append(", "); 
+            $('#rewardUserInfo').append("" + bettorStockName + ": " + bettorAmounts + " ETH");
+            if (result[3][i]) {
+              $('#rewardUserInfo').append(" Cancelled");
+            }
+            
+            //console.info("bettorInfo.bettorStocks:", result[1][i]);
+            //console.info("bettorInfo.bettorAmounts:", result[2][i]);
+            //console.info("bettorInfo.isCancelled:", result[3][i]);
+          }
         });
 
         /*
@@ -163,70 +299,82 @@ window.App = {
             console.info("oddsGOOG:", result[2].toString());
         });
         */
+        //////////////////////////////////////////////////////////////////////////////
     },
 
     selectBetting: function (inst) {
-      console.log(inst.value);
+      curContractMeta = {
+        address: $("#selectBetting :selected").val(),
+        date: $("#selectBetting :selected").text()
+      };
+      localStorage.setItem('StocksBetContractMeta', JSON.stringify(curContractMeta));
+
+      App.contractLoad(curContractMeta.address);
     },
 
-    cancelAllBets: function () {
-
+    cancelAllBets: function (code) {
+      /*
+      instance.cancelAllBet("GOOG", {gas: 1000000}, function(err, result) { 
+        console.log("cancelAllBetGOOG");
+        console.info("err:", err);
+        console.info("result:", result);
+      });
+      */
     },
 
     rewardClaim: function () {
-
+      instance.rewardClaim((err, result) => {
+          //console.log(result);
+          //console.log(err);
+          $('#rewardUserTransactionResult').html('<a href="https://ropsten.etherscan.io/tx/' + result + '" target="_blank"><b>Transaction Address in BlockChain</b></a><br>Please, wait about 2 minutes, and you will see ETH in your wallet.');
+          $('#rewardUserTransactionResult').show();
+      });
     },
 
-    sendBet: function (code) {
-        instance.sendBet(code, {value: 100000000000000000 }, function(err, result) { 
+    rewardCheck: function () {
+      $('#rewardUserTransactionResult').html('...');
+      instance.rewardCheck((err, result) => {
+        //console.log(result);
+        if (parseInt(result.toString()) == 0) {
+          $('#rewardUserResult').html('');
+          $('#rewardUserResultButtonCheck').show();
+
+          $('#rewardUserTransactionResult').html('Here is no reward or may be you took out the money early.');
+          $('#rewardUserTransactionResult').show();
+
+        } else {
+          $('#rewardUserTransactionResult').hide();
+          $('#rewardUserResultButtonCheck').hide();
+          //console.log(parseInt(result.toString());
+          console.log(err);
+
+          $('#rewardUserResult').html("Your reward in this betting: " + (result.toString() / weiEth) + " ETH");
+          if (result.toString() != "0") {
+            $('#rewardUserResultButtonClaim').show();
+          }
+        }
+      });
+    },
+
+
+    setPlaceBetModal: function (code) {
+      var stName = "Microsoft";
+      if (code == "GOOG") { 
+        stName = "Google";
+      } else if (code == "AAPL") {
+        stName = "Apple";
+      }
+      $("#placeBetModalTitle").html(stName + ", " + code);
+      $("#placeBetModalCode").val(code);
+    },
+
+    sendBet: function (val) {
+        instance.sendBet($("#placeBetModalCode").val(), {value: val * weiEth}, function(err, result) { 
             console.info("err:", err);
-            console.info("result:", result);
+            $("#placeBetModalTransactionResult").html('<a href="https://ropsten.etherscan.io/tx/' + result + '" target="_blank">Transaction Address in BlockChain</a><br>Please, wait about 2 minutes, and refrash the page to see you bet.');
         });
-    },
-
-    setStatus: function (message) {
-      var status = document.getElementById('status')
-      status.innerHTML = message
-    },
-  
-    refreshBalance: function () {
-      /*
-      var self = this
-  
-      var meta
-      stocksBetContract.deployed().then(function (instance) {
-        meta = instance
-        return meta.getBalance.call(account, { from: account })
-      }).then(function (value) {
-        var balance_element = document.getElementById('balance')
-        balance_element.innerHTML = value.valueOf()
-      }).catch(function (e) {
-        console.log(e)
-        self.setStatus('Error getting balance; see log.')
-      })
-      */
-    },
-  
-    sendCoin: function () {
-      var self = this
-  
-      var amount = parseInt(document.getElementById('amount').value)
-      var receiver = document.getElementById('receiver').value
-  
-      this.setStatus('Initiating transaction... (please wait)')
-  
-      var meta
-      stocksBetContract.deployed().then(function (instance) {
-        meta = instance
-        return meta.sendCoin(receiver, amount, { from: account })
-      }).then(function () {
-        self.setStatus('Transaction complete!')
-        self.refreshBalance()
-      }).catch(function (e) {
-        console.log(e)
-        self.setStatus('Error sending coin; see log.')
-      })
     }
+
   }
   
 

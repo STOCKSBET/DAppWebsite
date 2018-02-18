@@ -5,7 +5,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.1/assets/owl.carousel.min.css" rel="stylesheet" type="text/css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" rel="stylesheet" type="text/css">
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <!--<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">-->
   <link href="../css/plugin-blazy.min.css" rel="stylesheet" type="text/css">
   <link href="../css/animate.min.css" rel="stylesheet" type="text/css">
   <link href="../css/owl.carousel.min.css" rel="stylesheet" type="text/css">
@@ -18,7 +18,7 @@
   <link href="../css/colour-blue.css" id="colour-scheme" rel="stylesheet">
   <link href="../css/custom-style.css" rel="stylesheet">
   <link href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet">
-  <link href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css" rel="stylesheet">
+  <!--<link href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css" rel="stylesheet">-->
   <link href="../css/flag-icon.min.css" rel="stylesheet">
   
   <title>Stocks.Bet | STBT Ethereum smart contract</title>
@@ -62,13 +62,18 @@
       <div class="header">
         <div class="header-inner container">
           <div class="header-brand">
-            <a class="header-brand-text" href="/" title="Home">
-              <h1 class="h2">
-                <span class="header-brand-text-alt">Stocks.</span>BettingDApp
-              </h1>
-            </a>
-            <div class="header-divider d-none d-lg-block"></div>
-            <div class="header-slogan d-none d-lg-block">Smart Contract based DApp for betting on the price of Stocks</div>
+              <a class="header-brand-text" href="/" title="Home">
+                <h1 class="h2">
+                  <span class="header-brand-text-alt">Stocks.</span>BettingDApp
+                </h1>
+              </a>
+              <div class="header-divider d-none d-lg-block"></div>
+              <div class="header-slogan d-none d-lg-block">Smart Contract based DApp for betting on the price of Stocks</div>
+          </div>
+          <div class="navbar navbar-expand-md navbar-static-top">
+              <div class="navbar-main collapse">
+                <h5 class="text-center font-weight-light mt-2 mb-0 text-muted"><a href="/app/">Refrash the page</a></h5>
+              </div>
           </div>
         </div>
       </div>
@@ -76,30 +81,31 @@
   </div>
 
 
-
   <div id="containerBetting" class="container" style="display: none;">
-
-
       <hr class="hr-lg mt-5 mb-3 w-10 mx-auto hr-primary">
-      <h2 class="text-center text-uppercase font-weight-bold my-0">
-          Current betting <span id='statusCurrentBetting'></span>
+        <h2 class="text-center text-uppercase font-weight-bold my-0">
+          <span id='currentBettingName'></span> <span id='statusCurrentBetting'></span>
         </h2>
         <h5 class="text-center font-weight-light mt-2 mb-0 text-muted">
-            Duration <span id='durationCurrentBetting'></span>,
+            <span id='durationCurrentBetting'></span>
             <!--Open moment <span class='momentCloseValue'></span>, -->
             <span id='contractAddress'><a href='#'>Smart Contract Address</a></span>
           </h5>
           <hr class="mb-5 w-50 mx-auto">
 
+          <div id="bettingInfo" class="alert alert-blue" role="alert" style="display: none;"></div>
+          <div id="bettingWarning" class="alert alert-orange" role="alert" style="display: none;"></div>
 
           <div class="p-3 text-center text-lg-left bg-dark text-white overlay overlay-primary overlay-op-9 bg-img blazy-bg" data-animate="fadeIn">
             <div class="container">
               <div class="row">
                 <div class="col-9">
+                 <span id="rewardUserTransactionResult" style="display: none;"></span>
                   <h4 class="font-weight-bold mt-2">
                     <span id="rewardUserResult"></span>
+                    <button id="rewardUserResultButtonCheck" style="display: none;" type="button" class="btn btn-primary px-3" onclick='App.rewardCheck()'>Check Reward</button>
                     <button id="rewardUserResultButtonClaim" style="display: none;" type="button" class="btn btn-primary px-3" onclick='App.rewardClaim()'>Reward Claim</button>
-                    <button id="rewardUserResultButtonCancel" type="button" class="btn btn-primary px-3" onclick='App.cancelAllBets()'>Cancel All Bets</button>
+                    <!--<button id="rewardUserResultButtonCancel" type="button" class="btn btn-primary px-3" onclick='App.cancelAllBets()'>Cancel All Bets</button>-->
                   </h4>
                   <span id="rewardUserInfo"></span>
                 </div>
@@ -108,15 +114,6 @@
                   <form class="form-inline">
                       <label class="mr-sm-2" for="inlineFormCustomSelect">Select betting:</label>
                       <select id="selectBetting" class="form-control" onchange="App.selectBetting(this)">
-                        <option>2018-02-01</option>
-                        <option>2018-02-02</option>
-                        <option>2018-02-03</option>
-                        <option>2018-02-04</option>
-                        <option>2018-02-05</option>
-                        <option>2018-02-06</option>
-                        <option>2018-02-07</option>
-                        <option>2018-02-08</option>
-                        <option>2018-02-09</option>
                       </select>
                   </form>
                   
@@ -150,8 +147,8 @@
               <div class="row">
                 <div class="col-md-12 text-center align-items-center" id='MSFTisWinner'></div>
                 <div class="col-md-12 text-center align-items-center">
-                  <button type="button" class="buttonPlaceBet btn btn-lg btn-primary px-3 mt-3" onclick='App.sendBet("MSFT")'>Place Bet</button>
-                  <!--<button type="button" class="btn btn-lg btn-primary px-3 mt-3" data-toggle="modal" data-target="#myModal">Place Bet </button>-->
+                  <!--<button type="button" class="buttonPlaceBet btn btn-lg btn-primary px-3 mt-3" onclick='App.sendBet("MSFT")'>Place Bet</button>-->
+                  <button type="button" class="buttonPlaceBet btn btn-lg btn-primary px-3 mt-3" data-toggle="modal" data-target="#placeBetModal" onclick='App.setPlaceBetModal("MSFT")'>Place Bet </button>
                 </div>
               </div>
             </div>
@@ -192,8 +189,8 @@
               <div class="row">
                 <div class="col-md-12 text-center align-items-center" id='GOOGisWinner'></div>
                 <div class="col-md-12 text-center align-items-center">
-                    <button type="button" class="buttonPlaceBet btn btn-lg btn-primary px-3 mt-3" onclick='App.sendBet("GOOG")'>Place Bet</button>
-                    <!--<button type="button" class="btn btn-lg btn-primary px-3 mt-3" data-toggle="modal" data-target="#myModal">Place Bet </button>-->
+                    <!--<button type="button" class="buttonPlaceBet btn btn-lg btn-primary px-3 mt-3" onclick='App.sendBet("GOOG")'>Place Bet</button>-->
+                    <button type="button" class="buttonPlaceBet btn btn-lg btn-primary px-3 mt-3" data-toggle="modal" data-target="#placeBetModal" onclick='App.setPlaceBetModal("GOOG")'>Place Bet </button>
                 </div>
               </div>
             </div>
@@ -234,8 +231,8 @@
               <div class="row">
                 <div class="col-md-12 text-center align-items-center" id='AAPLisWinner'></div>
                 <div class="col-md-12 text-center align-items-center">
-                    <button type="button" class="buttonPlaceBet btn btn-lg btn-primary px-3 mt-3" onclick='App.sendBet("AAPL")'>Place Bet</button>
-                    <!--<button type="button" class="btn btn-lg btn-primary px-3 mt-3" data-toggle="modal" data-target="#myModal">Place Bet </button>-->
+                    <!--<button type="button" class="buttonPlaceBet btn btn-lg btn-primary px-3 mt-3" onclick='App.sendBet("AAPL")'>Place Bet</button>-->
+                    <button type="button" class="buttonPlaceBet btn btn-lg btn-primary px-3 mt-3" data-toggle="modal" data-target="#placeBetModal" onclick='App.setPlaceBetModal("AAPL")'>Place Bet </button>
                 </div>
               </div>
             </div>
@@ -266,26 +263,34 @@
       
 
 
-      <div class="modal fade"  id="myModal">
+      <div class="modal fade"  id="placeBetModal">
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h4 class="modal-title">Place Bet on Microsoft</h4>
+                <h4 class="modal-title">Place Bet</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <div class="modal-body">
-                <p>Payment in ETH</p>
-                <input type="text" type="number" class="form-control" value="0,1">
+              <div class="modal-body form-group">
+                <input type="hidden" id="placeBetModalCode" />
+                <div class="align-items-center text-center">
+                  <p>Now how much ETH you want to bet on the <span id="placeBetModalTitle"></span>?</p>
+                  <button type="button" class="btn btn-lg btn-primary px-3 mt-2" onclick='App.sendBet(0.1)'>0.1</button>
+                  <button type="button" class="btn btn-lg btn-primary px-3 mt-2" onclick='App.sendBet(0.2)'>0.2</button>
+                  <button type="button" class="btn btn-lg btn-primary px-3 mt-2" onclick='App.sendBet(0.3)'>0.3</button>
+                  <button type="button" class="btn btn-lg btn-primary px-3 mt-2" onclick='App.sendBet(0.4)'>0.4</button>
+                  <button type="button" class="btn btn-lg btn-primary px-3 mt-2" onclick='App.sendBet(0.5)'>0.5</button>
+                  <button type="button" class="btn btn-lg btn-primary px-3 mt-2" onclick='App.sendBet(1)'>1</button>
+                  <p class="mt-2" id="placeBetModalTransactionResult"></p>
+                </div>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Place Bet</button>
               </div>
-            </div><!-- /.modal-content -->
-          </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
+            </div>
+          </div>
+        </div>
 
 
 
@@ -298,7 +303,15 @@
         <div class="container">
           <div class="row">
             <div data-animate-delay="0.4" data-animate-offset="100%" style="animation-delay: 0.4s;">
-              <p>Currently on Ropsten Testnet. Mainnet release coming soon. Be ready to bet with real money!</p>
+              <p>This is the beta version of decentralized application (DAPP) in Ropsten Testnet.</p>
+              <p>Stocks.Bet Dapp must meet the following criteria:</p>
+              <ul>
+                <li>The application must be completely open-source, it must operate autonomously, and with no entity controlling the majority of its tokens. The application may adapt its protocol in response to proposed improvements and market feedback but all changes must be decided by consensus of its users.</li>
+                <li>The application's data and records of operation must be cryptographically stored in a public, decentralized blockchain in order to avoid any central points of failure.</li>
+                <li>The application must use a cryptographic token which is necessary for access to the application and any contribution of value should be rewarded in the application’s tokens (We are working on it).</li>
+                <li>The application must generate tokens according to a standard crytptographic algorithm acting as a proof of the value nodes are contributing to the application.</li>
+              </ul>
+              <a href='https://github.com/DavidJohnstonCEO/DecentralizedApplications'>The General Theory of Decentralized Applications, Dapps</a>
             </div>
           </div>
         </div>
@@ -329,7 +342,7 @@
   <script src="../js/bootstrap.min.js"></script>
   <script src="../js/custom-script.js"></script>
   <script src="../js/script.min.js"></script>
-
+  <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
   <script src="./js/app.js"></script>
-
+  
 </body></html>

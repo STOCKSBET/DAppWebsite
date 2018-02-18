@@ -16731,12 +16731,12 @@ all and (min-device-pixel-ratio:1.5) {
 }
 
 .timeline-item:before {
-  content: "";
+  content: "..";
   color: #f6f6f6
 }
 
 .timeline-item:after {
-  content: "";
+  content: "..";
   top: -39px;
   background: #fff
 }
@@ -16774,7 +16774,7 @@ all and (min-device-pixel-ratio:1.5) {
 }
 
 .timeline-stacked-down .timeline-item:before {
-  content: ""
+  content: ".."
 }
 
 .timeline-stacked-down .timeline-item:after {
@@ -16826,7 +16826,7 @@ all and (min-device-pixel-ratio:1.5) {
     font-style: normal;
     speak: none;
     display: inline-block;
-    content: ""
+    content: ".."
   }
   .timeline-item:after {
     right: -46px
@@ -17221,7 +17221,7 @@ all and (min-device-pixel-ratio:1.5) {
   font-style: normal;
   speak: none;
   display: inline-block;
-  content: ""
+  content: ".."
 }
 
 .timeline-right .timeline-item.even:after,
