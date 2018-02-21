@@ -11,22 +11,31 @@ window.addEventListener('load', function () {
       abi = JSON.parse(abiTxt);
       // Checking if Web3 has been injected by the browser (Mist/MetaMask)
       if (typeof web3 !== 'undefined') {
-        console.warn("Using web3 detected from external source. If you find that your accounts don't appear or you have 0 TestTicker, ensure you've configured that source properly. If using MetaMask, see the following link. Feel free to delete this warning. :) http://truffleframework.com/tutorials/truffle-and-metamask")
+        //console.warn("Using web3 detected from external source. If you find that your accounts don't appear or you have 0 TestTicker, ensure you've configured that source properly. If using MetaMask, see the following link. Feel free to delete this warning. :) http://truffleframework.com/tutorials/truffle-and-metamask")
         // Use Mist/MetaMask's provider
+        if (web3.currentProvider != null) {
         window.web3 = new Web3(web3.currentProvider)
-        // window.web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'))
+          // window.web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'))
+          App.start();
+        } else {
+          App.warning();
+        }
       } else {
-        console.warn("No web3 detected. Falling back to http://127.0.0.1:8545. You should remove this fallback when you deploy live, as it's inherently insecure. Consider switching to Metamask for development. More info here: http://truffleframework.com/tutorials/truffle-and-metamask")
+        // console.warn("No web3 detected. Falling back to http://127.0.0.1:8545. You should remove this fallback when you deploy live, as it's inherently insecure. Consider switching to Metamask for development. More info here: http://truffleframework.com/tutorials/truffle-and-metamask")
+        App.warning();
         // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
         // window.web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'))
       }
-      App.start()
     });
   })
 
 window.App = {
-    start: function () {
+    warning: function () {
+      $('#containerBettingWarning').show();
+    },
 
+    start: function () {
+      $('#containerBettingWarning').hide();
       if (localStorage.getItem("StocksBetContractMeta") != null) {
         curContractMeta = JSON.parse(localStorage.getItem("StocksBetContractMeta"));
       }
@@ -57,18 +66,16 @@ window.App = {
               date: $("#selectBetting :selected").text()
             };
             localStorage.setItem('StocksBetContractMeta', JSON.stringify(curContractMeta));
+            App.contractLoad(curContractMeta.address);
           }
           else {
-            //console.log("!!!");
             $("#selectBetting").val(curContractMeta.address).change();
           }
-  
-  
-           console.info("curContractMeta:", curContractMeta);
+ 
+          //console.info("curContractMeta:", curContractMeta);
           //console.info("curContractMetaIsExist:", curContractMetaIsExist);
           //localStorage.setItem('myCat', 'Tom');
-          
-          App.contractLoad(curContractMeta.address);
+          //App.contractLoad(curContractMeta.address);
         });
 
       });
@@ -81,9 +88,6 @@ window.App = {
         $('#currentBettingName').html(curContractMeta.date + " Betting");
 
         stocksBetContract = web3.eth.contract(abi);
-        account = web3.eth.accounts[0];
-
-        //console.info('account:', account)
         instance = stocksBetContract.at(address);
         //console.info('instance:', instance)
     
@@ -138,7 +142,7 @@ window.App = {
               console.info("Delay duration, min:", duration)
             }
             
-            $('#bettingInfo').html(' <b>Accepting bets is finished.</b> The Contract fix the price of stocks on ' + result[9].replace("00:00", "00 NY."));
+            $('#bettingInfo').html('<b>Accepting bets is finished.</b> The Contract fix the price of stocks on ' + result[9].replace("00:00", "00 NY."));
             $('#bettingInfo').show();
 
           } else if (result[0]) { // Open
@@ -213,10 +217,13 @@ window.App = {
                   //console.info(code + ".priceStart", result[1].toString());
                   //console.info(code + ".priceEnd", result[2].toString());
                   //console.info(code + ".betsCount", parseInt(result[3].toString()));
-                  console.info(code + ".isWinner", result[5]);
+                  //console.info(code + ".isWinner", result[5]);
                   //console.info(code + ".canceledBetsCount", parseInt(result[4].toString()));
                   if (result[5] == true) {
                     $('#' + code + 'isWinner').html('<i class="fa fa-trophy icon-3x text-primary"></i>');
+                  }
+                  else {
+                    $('#' + code + 'isWinner').html('');
                   }
                   
                   let odds = 0
