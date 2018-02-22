@@ -261,8 +261,7 @@ window.App = {
         */
         
         instance.getBettorInfo((err, result) => {
-          //console.info("result", result);
-          // console.info("bettorInfo.betsCount:", result[0].toString());
+          
           $('#rewardUserInfo').html("<b>Your bets count: " + result[0].toString() + "</b>");
           /*
           if (result[0].toString() != "0") {
