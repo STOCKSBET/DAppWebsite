@@ -17,6 +17,7 @@ window.addEventListener('load', function () {
         window.web3 = new Web3(web3.currentProvider)
           // window.web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'))
           App.start();
+          account = web3.eth.accounts[0];
         } else {
           App.warning();
         }
@@ -261,40 +262,34 @@ window.App = {
         */
         
         instance.getBettorInfo((err, result) => {
-          
-          $('#rewardUserInfo').html("<b>Your bets count: " + result[0].toString() + "</b>");
-          /*
-          if (result[0].toString() != "0") {
-            $('#rewardUserResultButtonCancel').show();
-          } else {
-            $('#rewardUserResultButtonCancel').hide();
-          }
-          */
 
+          if (!!account) {
+            $('#rewardUserInfo').html("<b>Your bets count: " + result[0].toString() + "</b>");
 
-          for (var i = 0; i < result[1].length; i++) {
+            for (var i = 0; i < result[1].length; i++) {
 
-            let bettorStockName;
-            if (result[1][i] == "0x4d53465400000000000000000000000000000000000000000000000000000000") {
-              bettorStockName = "MSFT";
-            } else if (result[1][i] == "0x474f4f4700000000000000000000000000000000000000000000000000000000") {
-              bettorStockName = "GOOG";
-            } else if (result[1][i] == "0x4141504c00000000000000000000000000000000000000000000000000000000") {
-              bettorStockName = "AAPL";
+              let bettorStockName;
+              if (result[1][i] == "0x4d53465400000000000000000000000000000000000000000000000000000000") {
+                bettorStockName = "MSFT";
+              } else if (result[1][i] == "0x474f4f4700000000000000000000000000000000000000000000000000000000") {
+                bettorStockName = "GOOG";
+              } else if (result[1][i] == "0x4141504c00000000000000000000000000000000000000000000000000000000") {
+                bettorStockName = "AAPL";
+              }
+
+              let bettorAmounts = result[2][i] / weiEth;
+
+              if (i == 0) $('#rewardUserInfo').append("<br>"); 
+              else  $('#rewardUserInfo').append(", "); 
+              $('#rewardUserInfo').append("" + bettorStockName + ": " + bettorAmounts + " ETH");
+              if (result[3][i]) {
+                $('#rewardUserInfo').append(" Cancelled");
+              }
+              
+              //console.info("bettorInfo.bettorStocks:", result[1][i]);
+              //console.info("bettorInfo.bettorAmounts:", result[2][i]);
+              //console.info("bettorInfo.isCancelled:", result[3][i]);
             }
-
-            let bettorAmounts = result[2][i] / weiEth;
-
-            if (i == 0) $('#rewardUserInfo').append("<br>"); 
-            else  $('#rewardUserInfo').append(", "); 
-            $('#rewardUserInfo').append("" + bettorStockName + ": " + bettorAmounts + " ETH");
-            if (result[3][i]) {
-              $('#rewardUserInfo').append(" Cancelled");
-            }
-            
-            //console.info("bettorInfo.bettorStocks:", result[1][i]);
-            //console.info("bettorInfo.bettorAmounts:", result[2][i]);
-            //console.info("bettorInfo.isCancelled:", result[3][i]);
           }
         });
 
@@ -338,28 +333,34 @@ window.App = {
     },
 
     rewardCheck: function () {
-      $('#rewardUserTransactionResult').html('...');
-      instance.rewardCheck((err, result) => {
-        //console.log(result);
-        if (parseInt(result.toString()) == 0) {
-          $('#rewardUserResult').html('');
-          $('#rewardUserResultButtonCheck').show();
 
-          $('#rewardUserTransactionResult').html('Here is no reward or may be you took out the money early.');
-          $('#rewardUserTransactionResult').show();
+      if (!account) {
+        $('#rewardUserInfo').html("<b>Login to your account in <a href='https://metamask.io/' target='_blank'>MetaMask</a> to know the results of your bets.</b>");
+      }
+      else {
+        $('#rewardUserTransactionResult').html('...');
+        instance.rewardCheck((err, result) => {
+          //console.log(result);
+          if (parseInt(result.toString()) == 0) {
+            $('#rewardUserResult').html('');
+            $('#rewardUserResultButtonCheck').show();
 
-        } else {
-          $('#rewardUserTransactionResult').hide();
-          $('#rewardUserResultButtonCheck').hide();
-          //console.log(parseInt(result.toString());
-          console.log(err);
+            $('#rewardUserTransactionResult').html('Here is no reward or may be you took out the money early.');
+            $('#rewardUserTransactionResult').show();
 
-          $('#rewardUserResult').html("Your reward in this betting: " + (result.toString() / weiEth) + " ETH");
-          if (result.toString() != "0") {
-            $('#rewardUserResultButtonClaim').show();
+          } else {
+            $('#rewardUserTransactionResult').hide();
+            $('#rewardUserResultButtonCheck').hide();
+            //console.log(parseInt(result.toString());
+            console.log(err);
+
+            $('#rewardUserResult').html("Your reward in this betting: " + (result.toString() / weiEth) + " ETH");
+            if (result.toString() != "0") {
+              $('#rewardUserResultButtonClaim').show();
+            }
           }
-        }
-      });
+        });
+      }
     },
 
 
