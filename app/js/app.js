@@ -16,8 +16,15 @@ window.addEventListener('load', function () {
         if (web3.currentProvider != null) {
         window.web3 = new Web3(web3.currentProvider)
           // window.web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'))
-          App.start();
-          account = web3.eth.accounts[0];
+          web3.version.getNetwork(function (err, netId) {
+            if (netId != 3) {
+              $('#containerBettingMainNet').show();
+            } else {
+              $('#containerBettingMainNet').hide();
+              App.start();
+              account = web3.eth.accounts[0];
+            }
+          });
         } else {
           App.warning();
         }
@@ -85,7 +92,6 @@ window.App = {
 
     contractLoad: function (address) {
         //////////////////////////////////////////////////////////////////////////////
-
         $('#currentBettingName').html(curContractMeta.date + " Betting");
 
         stocksBetContract = web3.eth.contract(abi);
@@ -107,6 +113,7 @@ window.App = {
 
         instance.actionStatus((err, result) => {
 
+          $('#rewardUserInfo').html();
           $('#rewardUserTransactionResult').hide();
           $('#bettingWarning').hide();
           $('.buttonPlaceBet').hide();
@@ -115,6 +122,11 @@ window.App = {
           $('#rewardUserResult').hide();
           $('#durationCurrentBetting').html('');
           //$('#rewardUserResultButtonCancel').hide();
+
+          if (!account) {
+            $('#rewardUserInfo').html("<b>Login to your account in <a href='https://metamask.io/' target='_blank'>MetaMask</a> to see detail of your betting.</b>");
+          }
+  
 
           if (result[3]) { // Voided
             $('#statusCurrentBetting').html("(Voided)");
@@ -334,10 +346,7 @@ window.App = {
 
     rewardCheck: function () {
 
-      if (!account) {
-        $('#rewardUserInfo').html("<b>Login to your account in <a href='https://metamask.io/' target='_blank'>MetaMask</a> to know the results of your bets.</b>");
-      }
-      else {
+      if (!!account) {
         $('#rewardUserTransactionResult').html('...');
         instance.rewardCheck((err, result) => {
           //console.log(result);
@@ -352,7 +361,7 @@ window.App = {
             $('#rewardUserTransactionResult').hide();
             $('#rewardUserResultButtonCheck').hide();
             //console.log(parseInt(result.toString());
-            console.log(err);
+            //console.log(err);
 
             $('#rewardUserResult').html("Your reward in this betting: " + (result.toString() / weiEth) + " ETH");
             if (result.toString() != "0") {
@@ -377,9 +386,19 @@ window.App = {
 
     sendBet: function (val) {
         instance.sendBet($("#placeBetModalCode").val(), {value: val * weiEth}, function(err, result) { 
-            console.info("err:", err);
             $("#placeBetModalTransactionResult").html('<a href="https://ropsten.etherscan.io/tx/' + result + '" target="_blank">Transaction Address in BlockChain</a><br>Please, wait about 2 minutes, and refrash the page to see you bet.');
         });
+    },
+
+    hideTradingView: function () {
+      $("#containerTradingView").hide();
+      $("#aHideContainerTradingView").hide();
+      $("#aShowContainerTradingView").show();
+    },
+    showTradingView: function () {
+      $("#containerTradingView").show();
+      $("#aHideContainerTradingView").show();
+      $("#aShowContainerTradingView").hide();
     }
 
   }
