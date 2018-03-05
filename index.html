@@ -108,14 +108,11 @@
     <div class="bg-white overlay overlay-op-6 text-center px-3 py-5 py-lg-10 flex-valign bg-img blazy-bg b-loaded" data-css="{&quot;background-position&quot;: &quot;center bottom&quot;}" style="background-position: center bottom; background-image: url(&quot;assets/img/backgrounds/clouds-2517653_1920.jpg&quot;);">
       <h2 class="display-4 text-white" data-animate-delay="0.2" style="animation-delay: 0.2s;">
           <img src="/img/logo.svg" width="200"><br>
-          Bet on companies with <span class="font-weight-bold">Stocks.Bet!</span>
+          Bet on the companies with <span class="font-weight-bold">Stocks.Bet!</span>
       </h2>
-
-
-
-      <h3 class="text-grey font-weight-normal" data-animate-delay="0.35" style="animation-delay: 0.35s;">
-          The World’s first DAPP to bet on the price of Stocks.
-      </h3>
+      <h4 class="text-grey font-weight-normal" data-animate-delay="0.35" style="animation-delay: 0.35s;">
+        First Blockchain DApp to hedging risk on the Stock Exchange when the markets are closed.
+      </h4>
       <hr class="hr-primary hr-lg w-20 mx-auto my-4" data-animate-delay="0.45" style="animation-delay: 0.45s;">
       <div> 
         <a href="/app" class="btn btn-primary btn-rounded btn-lg py-lg-3 px-lg-5" data-toggle="scroll-link" data-animate-delay="0.55" style="animation-delay: 0.55s;">BETTING DAPP</a>
@@ -132,7 +129,7 @@
           <h4 class="mt-2">
             Bet on stock's price
           </h4>
-          <p>Think Microsoft Stocks is going to pump? Bet on it to win more ETH.</p>
+          <p>You know that Microsoft stocks going up compared to others when markets open. Bet on it!</p>
         </div>
         <div class="col-lg-3 py-2" data-animate="fadeIn" data-animate-delay="0.2" style="animation-delay: 0.2s;">
           <i class="fa fa-trophy icon-5x text-primary"></i>
@@ -147,7 +144,7 @@
           <h4 class="mt-2">
             Trustless consensus
           </h4>
-          <p>Don't need registration or deposits, 100% fair in Blockchain & open source. </p>
+          <p>Don't need registration or deposits, 100% fair in Blockchain and open source. </p>
         </div>
         <div class="col-lg-3 py-2" data-animate="fadeIn" data-animate-delay="0.4" style="animation-delay: 0.4s;">
           <i class="fa fa-chart-line icon-5x text-primary"></i>
@@ -164,8 +161,9 @@
         <div class="row">
           <div class="col-12 col-lg-7 py-2">
             <h3 class="text-uppercase font-weight-bold mt-2">
-              A DAPP FOR EVERYONE
+              Stocks.Bet decentralized application
             </h3>
+            Based on the deployed open source Ethereum smart contract.
           </div>
           <div class="col-12 col-lg-5 py-2 text-lg-right">
             <a href="https://github.com/STOCKSBET" class="btn btn-lg btn-rounded btn-primary px-4">Open Source Development <i class="fab fa-github ml-2"></i></a>
@@ -175,26 +173,29 @@
     </div>
 
     <br>
-    <br>
-
+    
     <div id="content" class="p-0">
       <div class="py-3 pt-lg-0 pb-lg-0">
         <div class="container">
           <div class="row">
             <div data-animate-delay="0.4" data-animate-offset="100%" style="animation-delay: 0.4s;">
-              <p class="lead">Stocks.Bet decentralized application based on the deployed open source Ethereum smart contract for betting on the price of NASDAQ listed stocks and win from everyone who bets against you.</p>
-              <p>This contract control the funds, calculate the best performing stocks (with bet lock and bet close prices) and prepare reward for the winning users to collect. Price fetched from <a href='https://www.alphavantage.co'>https://www.alphavantage.co</a> API through Oraclize.it at the beginning (16:30 NY) and end of the bet period (10:00 NY).</p>
+              <p class="lead"><a href='https://github.com/STOCKSBET/Contracts/blob/master/contracts/StocksBetting.sol'>This contract</a> allows you to place bet on the price of NASDAQ listed stocks and win from bettors who not so smart as you.</p>
               <p>
-                Now there is three companies stocks: 
+                This contract can control the funds, calculate the change of stocks with market close price and market open price plus one minute. Contract prepare reward for the winning bettors.
+                The prices of stocks come from <a href='https://www.alphavantage.co'>https://www.alphavantage.co</a> as a main API, and Stocks.Bet API as alternative.
+                The price set with Oraclize.it at the beginning (16:30 NY) and end of the bet period (10:00 NY).
+              </p>
+              <p>
+                For beta version there is three companies' stocks: 
                 <ul>
-                  <li>Microsoft, MSFT</li>
-                  <li>Google, GOOG</li>
-                  <li>Apple, AAPL</li>
+                  <li>Microsoft (MSFT),</li>
+                  <li>Google (GOOG),</li>
+                  <li>Apple (AAPL).</li>
                   </ul>
               </p>
-              <p>Bettors place bet on stocks that performs the best among all the other competing ones in a specific time period. Bets are placed and rewards are claimed using Metamask plugin for Chrome / Firefox / Opera / Brave.</p>
-
-              <p class="mb-0">Being completely secured by the Blockchain, no one has control over the stocks rally or user funds once a contract is deployed and a rally is announced.</p>
+              <p>Bettors can place bet on the listed stocks they believe that will turn higher on the start of market in view of other stocks in the rally moment. 
+                  To place the bet and claimed the reward bettors need to use Metamask plugin for Chrome / Firefox / Opera / Brave.</p>
+              <p class="mb-0">All operations are completely secured by the Blockchain. There is no one has control over the bettors' investments or process of stocks' rally.</p>
             </div>
           </div>
         </div>
@@ -260,7 +261,18 @@
         <div class="timeline-item right animated fadeIn de-02">
             <div class="timeline-item-date">Q2 2018</div>
             <h4 class="timeline-item-title">
-                MainNet launch with daily bets, UI enhancements, Dividends contract
+                UI enhancements
+            </h4>
+            <p class="timeline-item-description">
+                Add some new features to the contract viewer <a href="/app/">here</a> from the results of feedback.
+                
+            </p>
+          </div>
+
+        <div class="timeline-item right animated fadeIn de-02">
+            <div class="timeline-item-date">Q3 2018</div>
+            <h4 class="timeline-item-title">
+                Publicate the contract with daily bets to MainNet and create dividends contract
             </h4>
             <p class="timeline-item-description">A huge part of the work has already been done on the beta version.<br>This gives an advantage to localizing the last blocks of production in MainNet.</p>
           </div>
@@ -271,27 +283,31 @@
         <div class="timeline-item right animated fadeIn de-02">
           <div class="timeline-item-date">Q3 2018</div>
           <h4 class="timeline-item-title">
-              Voting portal, Betting Contracts with more stocks
+              Contracts with more stocks and bet types
           </h4>
           <p class="timeline-item-description">
-              We would like to create more Bet types (Place, Show, Exacta, Trifecta).</p>
+              We would like add contract Guess the price of Stocks and values of World Stock Market Indices.</p>
         </div>
+
+
+        <div class="timeline-item right animated fadeIn de-02">
+            <div class="timeline-item-date">Q4 2018</div>
+            <h4 class="timeline-item-title">
+                Voting portal
+            </h4>
+            <p class="timeline-item-description">
+                We plan to determinate features of betting and rules on this portal.
+              </p>
+          </div>
 
         <div class="timeline-item right animated fadeIn de-02">
           <div class="timeline-item-date">Q4 2018</div>
           <h4 class="timeline-item-title">
-              Mobile App, Status.im integration
+              Mobile App
           </h4>
           <!--<p class="timeline-item-description">....</p>-->
         </div>
 
-        <div class="timeline-item right animated fadeIn de-02">
-          <div class="timeline-item-date">Q4 2018</div>
-          <h4 class="timeline-item-title">
-              Additional language support
-          </h4>
-          <!--<p class="timeline-item-description">....</p>-->
-        </div>
         <div class="timeline-breaker timeline-breaker-bottom">Follow our updates</div>
       </div>
     </div>
@@ -314,7 +330,7 @@
                   <h4 class="font-weight-bold text-white text-uppercase">
                     dividend payouts
                   </h4>
-                  <p>Get fixed income in ETH by holding STBT tokens.<br> 5% takeout from all the betting pools goes to token holders.</p>
+                  <p>STBT token holders get fixed income in ETH. It's 5% from all bettings.</p>
                 </div>
               </div>
               <div class="row mb-3">
@@ -324,7 +340,7 @@
                   <h4 class="font-weight-bold text-white text-uppercase">
                      discounted and features
                   </h4>
-                  <p>Bet with STBT token to unlock features and enjoy discounted takeout.</p>
+                  <p>You can place the bet with STBT token. It allows you to have some discount unlock different features.</p>
                 </div>
               </div>
               <div class="row mb-3">
@@ -334,7 +350,7 @@
                   <h4 class="font-weight-bold text-white text-uppercase">
                     Voting
                   </h4>
-                  <p>Vote on takeout rate, game rules and features.</p>
+                  <p>Your voting is the best thing to fix features of betting and rules.</p>
                 </div>
               </div>
             </div>
@@ -448,16 +464,29 @@
               </div>
               <div class="col">
                 <div class="p-2">
-                  May 1 - June 30
+                  May 1 - June 30 20:00 GMT
                   <br> 1 ETH = from 18,750 to 12,500 STBT
                 </div>
               </div>
             </div>
           </div>
+          
+          <div class="row no-gutters">
+            <div style="background-color:#465161; padding: 10px;">
+              <a href="https://www.trackico.io/" target="_blank" title="TrackICO">
+                <img border="0" src="https://www.trackico.io/static/img/partner_logo_white.png" alt="TrackICO - provider of information about the best ICOs" width="180px">
+              </a>
+            </div>
 
+          </div>
+
+  
+
+          <!--
           <div class="mt-3">
             <p>Residents or citizens of the USA or China should not participate. Follow the laws regarding token sales and online gambling in your jurisdiction.</p>
           </div>
+        -->
         </div>
       </div>
     </div>
